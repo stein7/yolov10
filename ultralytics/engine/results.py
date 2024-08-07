@@ -301,6 +301,33 @@ class Results(SimpleClass):
 
         return annotator.result()
 
+    def tojson_DH(self, save_dir, count):
+        
+        obj_dict = {}
+        for idx in range(self.boxes.shape[0]):
+            obj_dict[str(idx+10000)] = {
+                "name": self.names[int(self.boxes.cls[idx])],
+                "x": round(self.boxes.xyxy[idx][0].item()),
+                "y": round(self.boxes.xyxy[idx][1].item()),
+                "w": round(self.boxes.xywh[idx][2].item()),
+                "h": round(self.boxes.xywh[idx][3].item()),
+                "attributes": [],
+                "relations": []
+            }
+        image_dict = {
+            f"image {count}": {
+                "width": self.boxes.orig_shape[1],
+                "height": self.boxes.orig_shape[0],
+                "objects": obj_dict
+            }
+        }
+
+        import json
+        import os
+        save_path = os.path.join(save_dir, f'image_dict{count}.json')
+        with open(save_path, 'w') as f:
+            json.dump(image_dict, f, indent=4)
+
     def show(self, *args, **kwargs):
         """Show annotated results image."""
         self.plot(show=True, *args, **kwargs)

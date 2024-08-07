@@ -337,6 +337,8 @@ class BasePredictor:
                 im_gpu=None if self.args.retina_masks else im[i],
             )
 
+            result.tojson_DH(self.save_dir, self.dataset.count)
+
         # Save results
         if self.args.save_txt:
             result.save_txt(f"{self.txt_path}.txt", save_conf=self.args.save_conf)
